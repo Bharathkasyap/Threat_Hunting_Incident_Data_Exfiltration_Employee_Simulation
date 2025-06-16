@@ -31,7 +31,7 @@ I queried DeviceFileEvents in Microsoft Defender for Endpoint and observed frequ
 
 **KQL Query Used:**
 
-```
+```kusto
 DeviceFileEvents
 | where DeviceName == "windows-target-1"
 | where FileName contains ".zip"
@@ -46,7 +46,7 @@ I identified a zip file creation event and noted its timestamp. Using that, I se
 
 **KQL Query Used:**
 
-```
+```kusto
 let VMName = "windows-target-1";
 let SpecificTime = datetime(2025-04-11T20:49:59.6464336Z);
 DeviceProcessEvents
@@ -64,7 +64,7 @@ I examined the same time window for any signs of data exfiltration from the netw
 
 **KQL Query Used:**
 
-```
+```kusto
 let VMName = "windows-target-1";
 let SpecificTime = datetime(2025-04-11T20:49:59.6464336Z);
 DeviceNetworkEvents
@@ -81,7 +81,7 @@ Since there was no evidence of the zip file being transmitted over the network, 
 
 **KQL Query Used:**
 
-```
+```kusto
 DeviceEvents
 | where DeviceName == "windows-target-1"
 | where ActionType == "USBDevicePlugIn"
@@ -93,7 +93,7 @@ DeviceEvents
 
 I created a hypothetical detection rule for this lab to flag any user who generates 2 or more zip files within a 1-hour window. It excludes system-level activity and focuses on user-initiated actions. In a real-world scenario, this rule would be refined in consultation with management to account for users who routinely create zip files as part of their normal duties. This approach helps surface unusual activity that may indicate an attempt to exfiltrate data. I would also normally include a wider range of compressed file formats, but for the sake of this lab, I focused solely on .zip files.
 
-```
+```kusto
 DeviceFileEvents
 | where FileName endswith ".zip"
 | where RequestAccountName != "SYSTEM"
